@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ArcadeStrike — 1v1 Fighting</title>
+  <meta name="description" content="Real-time 1v1 online fighting game"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #0a0a14;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    #game-container canvas { display: block; border: 2px solid #e94560; box-shadow: 0 0 40px rgba(233,69,96,0.4); }
+    #loading {
+      position: fixed; inset: 0;
+      background: #0a0a14;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      z-index: 9999; color: #fff;
+    }
+    #loading h1 { font-size: 48px; color: #e94560; margin-bottom: 16px; letter-spacing: 4px; }
+    #loading p  { color: #555; font-size: 14px; }
+    .bar-wrap { width: 200px; height: 4px; background: #222; margin-top: 24px; border-radius: 2px; }
+    .bar      { height: 100%; background: #e94560; border-radius: 2px; animation: load 1.5s ease-in-out infinite; }
+    @keyframes load { 0%{width:0} 50%{width:100%} 100%{width:0} }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <h1>ARCADE STRIKE</h1>
+    <p>Loading game engine...</p>
+    <div class="bar-wrap"><div class="bar"></div></div>
+  </div>
+  <div id="game-container"></div>
+  <script type="module" src="/src/main.ts"></script>
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const el = document.getElementById('loading');
+        if (el) el.style.display = 'none';
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
