@@ -1,10 +1,7 @@
 import path from 'path';
 import { config } from 'dotenv';
-
-// Load .env FIRST before any other import
 config({ path: path.resolve(__dirname, '../../.env') });
 config({ path: path.resolve(__dirname, '../.env') });
-config({ path: path.resolve(__dirname, '.env') });
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
@@ -20,7 +17,7 @@ import { ArcadeRoom } from './game/ArcadeRoom';
 import { matchmakingQueue } from './matchmaking/MatchmakingQueue';
 import { withdrawalQueue } from './withdrawals/WithdrawalQueue';
 
-const PORT = parseInt(process.env.PORT ?? '2567', 10);
+const PORT = parseInt(process.env.PORT ?? '10000', 10);
 
 async function main() {
   if (!process.env.DATABASE_URL) {
@@ -30,43 +27,40 @@ async function main() {
   await initRedis();
 
   const app = Fastify({ logger: false, trustProxy: true });
-
   await app.register(cors, { origin: process.env.CLIENT_ORIGIN ?? '*', credentials: true });
-
   await app.register(healthRoutes);
   await app.register(matchmakingRoutes);
 
   const gameServer = new Server({
     transport: new WebSocketTransport({ server: app.server }),
   });
-
   gameServer.define('arcade', ArcadeRoom);
 
   if (process.env.NODE_ENV !== 'production') {
     app.register(monitor as any);
-    logger.info('[Boot] Colyseus monitor: http://localhost:' + PORT + '/colyseus');
   }
 
   matchmakingQueue.start();
-  withdrawalQueue.start();
+  if (process.env.DATABASE_URL) withdrawalQueue.start();
 
   await app.listen({ port: PORT, host: '0.0.0.0' });
   await gameServer.listen(PORT);
 
-  logger.info('══════════════════════════════════');
+  logger.info('══════════════════════════════════════');
   logger.info('  ArcadeStrike Server ONLINE');
-  logger.info(`  WebSocket : ws://0.0.0.0:${PORT}`);
-  logger.info(`  REST API  : http://0.0.0.0:${PORT}/api`);
-  logger.info(`  Health    : http://0.0.0.0:${PORT}/health`);
-  logger.info('══════════════════════════════════');
+  logger.info('  WS   : ws://0.0.0.0:' + PORT);
+  logger.info('  HTTP : http://0.0.0.0:' + PORT);
+  logger.info('  Health: http://0.0.0.0:' + PORT + '/health');
+  logger.info('══════════════════════════════════════');
 }
 
 process.on('SIGINT',  shutdown);
 process.on('SIGTERM', shutdown);
-process.on('unhandledRejection', (r) => logger.error('[Boot] unhandledRejection', r));
-process.on('uncaughtException',  (e) => { logger.error('[Boot] uncaughtException', e); process.exit(1); });
+process.on('unhandledRejection', (r) => logger.error('[Boot] unhandledRejection: ' + String(r)));
+process.on('uncaughtException',  (e) => { logger.error('[Boot] uncaughtException: ' + String(e)); process.exit(1); });
 
 async function shutdown() {
+  logger.info('[Boot] shutting down...');
   matchmakingQueue.stop();
   withdrawalQueue.stop();
   await disconnectRedis();
@@ -74,4 +68,4 @@ async function shutdown() {
   process.exit(0);
 }
 
-main().catch(e => { logger.error('[Boot] fatal', e); process.exit(1); });
+main().catch(e => { logger.error('[Boot] fatal: ' + String(e)); process.exit(1); });

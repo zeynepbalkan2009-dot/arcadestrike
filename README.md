@@ -1,33 +1,41 @@
 # ArcadeStrike — 1v1 Online Fighting Game
 
-Real-time competitive fighting game built with Phaser 3 + Colyseus.
+Real-time competitive 1v1 fighting game.
+
+## Play
+🎮 **[Play Now →](https://arcadestrike.vercel.app)**
 
 ## Controls
 | Key | Action |
 |-----|--------|
-| ← → | Move |
+| ← → | Move left/right |
 | ↑ | Jump |
 | Z | Attack |
 | X | Block |
 
-## Stack
-- **Client:** Phaser 3 + TypeScript + Vite
-- **Server:** Colyseus + Fastify + Node.js
+## How to Play
+1. Open the game link
+2. Click **FIND MATCH**
+3. Wait for an opponent
+4. Fight! Win 2 rounds to win the match
+
+## Tech Stack
+- **Client:** Phaser 3 + TypeScript + Vite → Vercel
+- **Server:** Colyseus + Fastify + Node.js → Render
 - **Database:** PostgreSQL + Prisma
-- **Deploy:** Render (server) + Vercel (client)
+- **Real-time:** WebSocket (Colyseus rooms)
 
 ## Local Development
-
 ```bash
-# Terminal 1 — Server
+# Server
 cd server
-cp .env.example .env   # edit DATABASE_URL
+cp .env.example .env
 npm install
 npm run prisma:generate
 npm run prisma:migrate:dev
 npm run dev
 
-# Terminal 2 — Client
+# Client (new terminal)
 cd client
 npm install
 npm run dev

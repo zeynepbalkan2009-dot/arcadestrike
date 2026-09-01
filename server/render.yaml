@@ -5,8 +5,9 @@ services:
     region: frankfurt
     plan: free
     rootDir: server
-    buildCommand: npm install && npm run prisma:generate
+    buildCommand: npm install && npm run prisma:generate && npm run build
     startCommand: npm run prisma:migrate && npm start
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
