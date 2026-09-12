@@ -7,7 +7,6 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { Server } from '@colyseus/core';
 import { WebSocketTransport } from '@colyseus/ws-transport';
-import { monitor } from '@colyseus/monitor';
 import { logger } from './utils/logger';
 import { initRedis, disconnectRedis } from './infra/redis';
 import { disconnectPrisma } from './db/prisma';
@@ -21,9 +20,8 @@ const PORT = parseInt(process.env.PORT ?? '10000', 10);
 
 async function main() {
   if (!process.env.DATABASE_URL) {
-    logger.warn('[Boot] DATABASE_URL not set — DB features disabled');
+    logger.warn('[Boot] DATABASE_URL not set');
   }
-
   await initRedis();
 
   const app = Fastify({ logger: false, trustProxy: true });
@@ -36,31 +34,20 @@ async function main() {
   });
   gameServer.define('arcade', ArcadeRoom);
 
-  if (process.env.NODE_ENV !== 'production') {
-    app.register(monitor as any);
-  }
-
   matchmakingQueue.start();
   if (process.env.DATABASE_URL) withdrawalQueue.start();
 
   await app.listen({ port: PORT, host: '0.0.0.0' });
-  await gameServer.listen(PORT);
 
-  logger.info('══════════════════════════════════════');
-  logger.info('  ArcadeStrike Server ONLINE');
-  logger.info('  WS   : ws://0.0.0.0:' + PORT);
-  logger.info('  HTTP : http://0.0.0.0:' + PORT);
-  logger.info('  Health: http://0.0.0.0:' + PORT + '/health');
-  logger.info('══════════════════════════════════════');
+  logger.info('ArcadeStrike ONLINE — port ' + PORT);
 }
 
-process.on('SIGINT',  shutdown);
+process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 process.on('unhandledRejection', (r) => logger.error('[Boot] unhandledRejection: ' + String(r)));
-process.on('uncaughtException',  (e) => { logger.error('[Boot] uncaughtException: ' + String(e)); process.exit(1); });
+process.on('uncaughtException', (e) => { logger.error('[Boot] uncaughtException: ' + String(e)); process.exit(1); });
 
 async function shutdown() {
-  logger.info('[Boot] shutting down...');
   matchmakingQueue.stop();
   withdrawalQueue.stop();
   await disconnectRedis();
