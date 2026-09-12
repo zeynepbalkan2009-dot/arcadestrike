@@ -1,6 +1,6 @@
 import { matchMaker } from '@colyseus/core';
 import { logger } from '../utils/logger';
-import type { QueueEntry } from '../../../shared/src/types';
+import type { QueueEntry } from './shared/types';
 
 const _queue = new Map<string, QueueEntry & { addedAt: number }>();
 let _timer: ReturnType<typeof setInterval> | null = null;
