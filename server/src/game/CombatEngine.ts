@@ -3,8 +3,8 @@ import {
   GRAVITY, JUMP_VELOCITY, MOVE_SPEED, TICK_MS,
   STAGE_WIDTH, GROUND_Y, ATTACK_RANGE, ATTACK_DAMAGE,
   CRIT_MULTIPLIER, BLOCK_REDUCTION, ATTACK_COOLDOWN_MS,
-} from './shared/combat';
-import type { PlayerInputPayload, HitResult } from './shared/types';
+} from '../shared/combat';
+import type { PlayerInputPayload, HitResult } from '../shared/types';
 
 const _meta = new Map<string, { lastAttackMs: number }>();
 function getMeta(id: string) {

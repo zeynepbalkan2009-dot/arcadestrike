@@ -4,13 +4,13 @@ import { simulateTick, resetCombatMeta } from './CombatEngine';
 import { logger } from '../utils/logger';
 import {
   TICK_MS, MAX_HP, ROUNDS_TO_WIN, ROUND_DURATION_S, STAGE_WIDTH, GROUND_Y,
-} from './shared/combat';
+} from '../shared/combat';
 import {
   MSG_INPUT, MSG_READY, MSG_PING, MSG_PONG,
   MSG_COUNTDOWN, MSG_ROUND_START, MSG_ROUND_END, MSG_MATCH_END,
   MSG_PLAYER_HIT,
-} from './shared/types';
-import type { PlayerInputPayload } from './shared/types';
+} from '../shared/types';
+import type { PlayerInputPayload } from '../shared/types';
 import { randomUUID } from 'crypto';
 
 const SPAWN_X = [150, STAGE_WIDTH - 150];
