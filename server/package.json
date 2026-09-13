@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --exit-child src/index.ts",
-   "build": "tsc -p tsconfig.json",
-{execSync}=require('child_process');try{execSync('./node_modules/.bin/prisma db push --schema=prisma/schema.prisma --accept-data-loss',{stdio:'inherit',env:process.env})}catch(e){console.error(e)}\"",
+    "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate --schema=prisma/schema.prisma",
     "prisma:migrate": "prisma db push --schema=prisma/schema.prisma --accept-data-loss",
